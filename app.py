@@ -270,6 +270,14 @@ def bot_status():
         "isRunning": is_running,
         "messages": messages
     })
+@app.route('/admin')
+def admin_panel():
+    return render_template('admin.html',
+        is_running=is_running,
+        target_views=target_views,
+        view_count=view_count,
+        video_id=video_id
+    )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
