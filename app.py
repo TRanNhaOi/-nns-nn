@@ -287,4 +287,4 @@ def admin_panel():
                               access_log=[])  # Access log not implemented in original code
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)  # Debug disabled for production
+    app.run(host='0.0.0.0', port=5001, debug=False)  # Debug disabled for production
