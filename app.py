@@ -10,11 +10,15 @@ import random
 import os
 
 app = Flask(__name__)
+app.secret_key = 'nhk_super_secret_key'  # Khóa bảo mật session
 
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = '123456'
 # Global variables to track bot status
 view_count = 0
 target_views = 0
 video_id = ''
+access_log = []
 is_running = False
 status_messages = []
 view_lock = threading.Lock()
@@ -259,25 +263,41 @@ def start_bot():
         threads.append(t)
     
     return jsonify({"videoId": video_id})
-
 @app.route('/bot_status')
 def bot_status():
     global view_count, is_running, status_messages
     messages = status_messages[:]
-    status_messages = []  # Clear messages after sending
+    status_messages = []
     return jsonify({
         "viewCount": view_count,
         "isRunning": is_running,
         "messages": messages
     })
+
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        if request.form['username'] == ADMIN_USERNAME and request.form['password'] == ADMIN_PASSWORD:
+            session['admin_logged_in'] = True
+            return redirect('/admin')
+        return render_template('admin_login.html', error='Sai tài khoản hoặc mật khẩu!')
+    return render_template('admin_login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    return redirect('/admin_login')
+
 @app.route('/admin')
 def admin_panel():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
     return render_template('admin.html',
         is_running=is_running,
         target_views=target_views,
         view_count=view_count,
-        video_id=video_id
-    )
+        video_id=video_id,
+        access_log=access_log)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
