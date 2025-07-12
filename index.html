@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok View Bot by NHK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    /* Hide scrollbars for the entire page */
+    html, body {
+        scrollbar-width: none; /* For Firefox */
+        -ms-overflow-style: none; /* For Internet Explorer and Edge */
+    }
+
+    /* Hide scrollbars for WebKit-based browsers (Chrome, Safari, etc.) */
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+        display: none;
+    }
+
+    .progress-bar {
+        height: 20px;
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+    .typewriter {
+        overflow: hidden;
+        border-right: .15em solid #3b82f6;
+        white-space: nowrap;
+        letter-spacing: .15em;
+        animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+    }
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+    @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: #3b82f6; }
+    }
+    .glow {
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+    }
+    .spinner {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <!-- Audio Element for Random Music -->
+    <audio id="backgroundMusic" autoplay loop>
+        <source id="musicSource" src="" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Banner -->
+        <div class="text-center mb-8">
+            <div class="text-4xl md:text-5xl font-bold mb-2 text-blue-400 glow">
+                TikTok View Bot
+            </div>
+            <div class="text-xl text-blue-300 mb-4">by NHK</div>
+            <div class="text-sm text-gray-400">Version 2.0 - 2025</div>
+        </div>
+
+        <!-- Bio Section -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-blue-500/20 shadow-lg">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-blue-300">Bot Information</h3>
+                    <p class="text-sm text-gray-400">Cre: NHK</p>
+                </div>
+            </div>
+            <p class="text-purple-300 italic">Tập tành code lỏ=)))))</p>
+        </div>
+
+        <!-- Main Form -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-blue-500/20 shadow-lg">
+            <h2 class="text-xl font-bold text-blue-400 mb-6 text-center">
+                <i class="fas fa-robot mr-2"></i> TikTok View Bot
+            </h2>
+            
+            <div class="mb-6">
+                <label for="videoUrl" class="block text-yellow-300 mb-2">
+                    <i class="fas fa-link mr-2"></i>Nhập link cần buff:))
+                </label>
+                <input type="text" id="videoUrl" class="w-full px-4 py-2 bg-gray-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://www.tiktok.com/@username/video/123456789">
+            </div>
+            
+            <div class="mb-6">
+                <label for="viewCount" class="block text-yellow-300 mb-2">
+                    <i class="fas fa-eye mr-2"></i>Số lượng view m muốn tăng
+                </label>
+                <input type="number" id="viewCount" class="w-full px-4 py-2 bg-gray-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1000">
+            </div>
+            
+            <div class="flex justify-center">
+                <button id="startBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center">
+                    <i class="fas fa-play mr-2"></i> Bắt đầu
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Animation -->
+        <div id="loadingSection" class="hidden text-center mb-8">
+            <div class="inline-block p-4 bg-gray-800 rounded-lg border border-blue-500/20">
+                <div class="flex items-center justify-center">
+                    <div class="spinner text-blue-400 text-2xl mr-3">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <span class="text-blue-300 typewriter">Đang setup Bot TIKTOKVIEW...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-blue-500/20 shadow-lg">
+                <h3 class="text-lg font-bold text-blue-300 mb-4">
+                    <i class="fas fa-chart-line mr-2"></i> Kết quả
+                </h3>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-green-400" id="currentViews">0</span>
+                        <span class="text-sm font-medium text-gray-400" id="targetViews">/ 0</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                        <div id="progressBar" class="progress-bar bg-gradient-to-r from-blue-500 to-green-500" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div id="videoIdDisplay" class="mb-4 hidden">
+                    <p class="text-sm">
+                        <span class="text-gray-400">ID VIDEO:</span>
+                        <span id="videoId" class="text-green-400 font-mono"></span>
+                    </p>
+                </div>
+                
+                <div id="statusMessages" class="space-y-2">
+                    <!-- Status messages will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm mt-12">
+            <p>© 2025 TikTok View Bot by NHK. For educational purposes only.</p>
+            <p class="mt-1">Tập tành code lỏ=)))))</p>
+        </div>
+    </div>
+
+    <script>
+        // Array of music tracks
+        const musicTracks = [
+            'https://files.catbox.moe/47z1sf.mp3',
+            'https://files.catbox.moe/9dd0pd.mp3',
+            'https://files.catbox.moe/2sbe1t.mp3',
+            'https://files.catbox.moe/0ckbj5.mp3',
+            'https://files.catbox.moe/fkpcp0.mp3'
+        ];
+
+        // Select a random track
+        const randomTrack = musicTracks[Math.floor(Math.random() * musicTracks.length)];
+        document.getElementById('musicSource').src = randomTrack;
+        document.getElementById('backgroundMusic').load();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startBtn');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const videoUrlInput = document.getElementById('videoUrl');
+            const viewCountInput = document.getElementById('viewCount');
+            const progressBar = document.getElementById('progressBar');
+            const currentViewsSpan = document.getElementById('currentViews');
+            const targetViewsSpan = document.getElementById('targetViews');
+            const videoIdDisplay = document.getElementById('videoIdDisplay');
+            const videoIdSpan = document.getElementById('videoId');
+            const statusMessages = document.getElementById('statusMessages');
+            
+            let viewCount = 0;
+            let targetViews = 0;
+            let videoId = '';
+            let isRunning = false;
+            
+            startBtn.addEventListener('click', async function() {
+                const videoUrl = videoUrlInput.value.trim();
+                targetViews = parseInt(viewCountInput.value);
+                
+                if (!videoUrl) {
+                    addStatusMessage('Vui lòng nhập link video TikTok', 'error');
+                    videoUrlInput.focus();
+                    return;
+                }
+                
+                if (isNaN(targetViews) || targetViews <= 0) {
+                    addStatusMessage('Số lượng cần lớn hơn 0', 'error');
+                    viewCountInput.focus();
+                    return;
+                }
+                
+                // Reset state
+                viewCount = 0;
+                isRunning = true;
+                statusMessages.innerHTML = '';
+                targetViewsSpan.textContent = `/${targetViews}`;
+                currentViewsSpan.textContent = '0';
+                progressBar.style.width = '0%';
+                
+                // Show loading
+                loadingSection.classList.remove('hidden');
+                resultsSection.classList.add('hidden');
+                
+                // Make API call to Flask backend
+                try {
+                    const response = await fetch('/start_bot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            videoUrl: videoUrl,
+                            targetViews: targetViews
+                        })
+                    });
+                    const data = await response.json();
+                    
+                    loadingSection.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+                    
+                    if (data.error) {
+                        addStatusMessage(data.error, 'error');
+                        return;
+                    }
+                    
+                    videoId = data.videoId;
+                    videoIdSpan.textContent = videoId;
+                    videoIdDisplay.classList.remove('hidden');
+                    
+                    // Poll for updates
+                    const pollInterval = setInterval(async () => {
+                        const statusResponse = await fetch('/bot_status');
+                        const statusData = await statusResponse.json();
+                        
+                        viewCount = statusData.viewCount;
+                        currentViewsSpan.textContent = viewCount;
+                        const percentage = (viewCount / targetViews) * 100;
+                        progressBar.style.width = `${percentage}%`;
+                        
+                        // Update progress bar color
+                        if (percentage < 30) {
+                            progressBar.className = 'progress-bar bg-gradient-to-r from-blue-500 to-blue-400';
+                        } else if (percentage < 70) {
+                            progressBar.className = 'progress-bar bg-gradient-to-r from-blue-500 to-green-400';
+                        } else {
+                            progressBar.className = 'progress-bar bg-gradient-to-r from-green-500 to-green-400';
+                        }
+                        
+                        // Add status messages
+                        statusData.messages.forEach(msg => {
+                            addStatusMessage(msg.message, msg.type);
+                        });
+                        
+                        if (!statusData.isRunning) {
+                            clearInterval(pollInterval);
+                            addStatusMessage(`Thành công! Gửi đến ${viewCount} views đến video của bạn!`, 'success');
+                        }
+                    }, 1000);
+                } catch (error) {
+                    loadingSection.classList.add('hidden');
+                    addStatusMessage(`Lỗi: ${error.message}`, 'error');
+                }
+            });
+            
+            function addStatusMessage(message, type) {
+                const messageDiv = document.createElement('div');
+                let iconClass = '';
+                let textColor = '';
+                
+                switch (type) {
+                    case 'success':
+                        iconClass = 'fa-check-circle text-green-400';
+                        textColor = 'text-green-400';
+                        break;
+                    case 'error':
+                        iconClass = 'fa-times-circle text-red-400';
+                        textColor = 'text-red-400';
+                        break;
+                    case 'info':
+                        iconClass = 'fa-info-circle text-blue-400';
+                        textColor = 'text-blue-400';
+                        break;
+                    default:
+                        iconClass = 'fa-info-circle text-gray-400';
+                        textColor = 'text-gray-400';
+                }
+                
+                messageDiv.className = `flex items-start ${textColor} text-sm`;
+                messageDiv.innerHTML = `
+                    <i class="fas ${iconClass} mt-1 mr-2"></i>
+                    <span>${message}</span>
+                `;
+                
+                statusMessages.appendChild(messageDiv);
+                statusMessages.scrollTop = statusMessages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
